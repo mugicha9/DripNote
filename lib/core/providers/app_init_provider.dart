@@ -1,0 +1,6 @@
+import 'package:dripnote/features/recipe_list/presentation/recipe_list_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final appInitProvider = FutureProvider<void>((ref) async {
+  await ref.read(recipeListProvider.notifier).load();
+});
