@@ -5,21 +5,18 @@ import '../domain/recipe_repository.dart';
 
 // Directory Throw JSON into Hive Box
 class RecipeRepositoryImpl implements RecipeRepository {
-  final Box _box;
+  final Box<Recipe> _box;
 
   RecipeRepositoryImpl(this._box);
 
   @override
   Future<List<Recipe>> fetchAll() async {
-    final values = _box.toMap().values;
-    return values.map((json) {
-      return Recipe.fromJson(Map<String, dynamic>.from(json as Map));
-    }).toList();
+    return _box.values.toList();
   }
 
   @override
   Future<void> save(Recipe recipe) async {
-    await _box.put(recipe.id, recipe.toJson());
+    await _box.put(recipe.id, recipe);
   }
 
   @override
@@ -29,7 +26,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
 }
 
 /// Hive Box プロバイダ（Riverpod 用）
-final recipeBoxProvider = Provider<Box>((ref) {
+final recipeBoxProvider = Provider<Box<Recipe>>((ref) {
   throw UnimplementedError();
 });
 

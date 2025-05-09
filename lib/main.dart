@@ -1,8 +1,12 @@
+import 'package:dripnote/features/recipe_list/domain/recipe.dart';
+import 'package:dripnote/features/recipe_list/domain/recipe_process_step.dart';
+import 'package:dripnote/features/recipe_list/domain/recipe_process_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'core/presentation/settings_page.dart';
 import 'features/recipe_list/presentation/recipe_edit_page.dart';
 import 'features/recipe_list/presentation/recipe_list_page.dart';
 import 'features/bean_management/presentation/bean_management_page.dart';
@@ -13,7 +17,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
-  final box = await Hive.openBox<dynamic>('recipes');
+
+  Hive.registerAdapter(RecipeProcessTypeAdapter());
+  Hive.registerAdapter(RecipeProcessStepAdapter());
+  Hive.registerAdapter(RecipeAdapter());
+
+  // Hive.deleteBoxFromDisk('recipes');
+
+  final box = await Hive.openBox<Recipe>('recipes');
 
   runApp(ProviderScope(
     overrides: [
@@ -35,6 +46,11 @@ final GoRouter _router = GoRouter(
       path: '/home',
       name: 'home',
       builder:(context, state) => const MainScreen(),
+    ),
+    GoRoute(
+      path: '/settings',
+      name: 'settings',
+      builder: (context, state) => const SettingsPage(),
     ),
     GoRoute(
       path: '/recipe/edit',
@@ -79,6 +95,7 @@ class _MainScreenState extends State<MainScreen> {
   static const List<Widget> _pages = [
     RecipeListPage(),
     BeanManagementPage(),
+    SettingsPage(),
   ];
 
   @override
@@ -100,6 +117,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.coffee),
             label: 'Beans',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),
