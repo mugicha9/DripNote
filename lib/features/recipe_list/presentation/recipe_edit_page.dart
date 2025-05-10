@@ -1,15 +1,12 @@
-import 'package:dripnote/features/recipe_list/application/recipe_edit_notifier.dart';
+import 'package:dripnote/features/recipe_list/presentation/recipe_edit_notifier.dart';
 import 'package:dripnote/features/recipe_list/data/recipe_repository_impl.dart';
-import 'package:dripnote/features/recipe_list/domain/recipe.dart';
-import 'package:dripnote/features/recipe_list/domain/recipe_process_step.dart';
-import 'package:dripnote/features/recipe_list/domain/recipe_usecases.dart';
+import 'package:dripnote/features/recipe_list/application/recipe_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:uuid/uuid.dart';
 
-import '../application/recipe_list_notifier.dart';
+import 'recipe_list_notifier.dart';
 import '../domain/recipe_process_type.dart';
 import 'recipe_process_row.dart';
 
@@ -23,14 +20,12 @@ class RecipeEditPage extends ConsumerStatefulWidget {
 
 class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
   final _formKey = GlobalKey<FormState>();
-  static const _uuid = Uuid();
 
   late String _title;
   String? _water;
   String? _coffee;
   String? _temperature;
   String? _grain;
-  List<RecipeProcessStep>? _steps;
 
   @override
   void initState() {
@@ -45,7 +40,6 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
     _coffee = recipe.coffeeAmount?.toString();
     _temperature = recipe.temperature?.toString();
     _grain = recipe.grain;
-    _steps = recipe.steps;
   }
 
   

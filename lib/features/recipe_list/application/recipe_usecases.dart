@@ -1,5 +1,5 @@
-import 'recipe.dart';
-import 'recipe_repository.dart';
+import '../domain/recipe.dart';
+import '../domain/recipe_repository.dart';
 
 class GetAllRecipes {
   final RecipeRepository repository;

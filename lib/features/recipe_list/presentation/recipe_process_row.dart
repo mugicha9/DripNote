@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../application/recipe_edit_notifier.dart';
+import 'recipe_edit_notifier.dart';
 import '../domain/recipe_process_step.dart';
 import '../domain/recipe_process_type.dart';
-
-
-
 
 class RecipeProcessRow extends ConsumerWidget {
   final String? recipeId;
@@ -28,8 +25,8 @@ class RecipeProcessRow extends ConsumerWidget {
     return Row(
       children: [
         ReorderableDragStartListener(
-          child: const Icon(Icons.drag_handle),
           index: currentIndex,
+          child: const Icon(Icons.drag_handle),
         ),
         DropdownButton<RecipeProcessType>(
           value: step.type,
