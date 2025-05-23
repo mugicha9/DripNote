@@ -1,10 +1,8 @@
-// import 'package:dripnote/features/recipe_list/data/recipe_repository_impl.dart';
-// import 'package:dripnote/features/recipe_list/domain/recipe_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../application/recipe_list_notifier.dart';
+import 'recipe_list_notifier.dart';
 
 class RecipeListPage extends ConsumerWidget {
   const RecipeListPage({super.key});

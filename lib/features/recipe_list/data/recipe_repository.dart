@@ -1,4 +1,4 @@
-import 'recipe.dart';
+import '../domain/recipe.dart';
 
 abstract class RecipeRepository {
   Future<List<Recipe>> fetchAll();

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import '../domain/recipe.dart';
-import '../domain/recipe_repository.dart';
+import 'recipe_repository.dart';
 
 // Directory Throw JSON into Hive Box
 class RecipeRepositoryImpl implements RecipeRepository {
@@ -32,6 +32,6 @@ final recipeBoxProvider = Provider<Box<Recipe>>((ref) {
 
 /// レシピリポジトリプロバイダ
 final recipeRepositoryProvider = Provider<RecipeRepository>((ref) {
-  final box = ref.watch(recipeBoxProvider);
+  final box = ref.read(recipeBoxProvider);
   return RecipeRepositoryImpl(box);
 });

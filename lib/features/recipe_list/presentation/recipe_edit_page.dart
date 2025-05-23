@@ -1,6 +1,4 @@
 import 'package:dripnote/features/recipe_list/presentation/recipe_edit_notifier.dart';
-import 'package:dripnote/features/recipe_list/data/recipe_repository_impl.dart';
-import 'package:dripnote/features/recipe_list/application/recipe_usecases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,8 +57,10 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
 
     final edited = ref.read(recipeEditProvider(widget.recipeId));
 
-    await SaveRecipe(ref.read(recipeRepositoryProvider))(edited);
-    await ref.watch(recipeListProvider.notifier).load();
+    final listNotifier = ref.read(recipeListProvider.notifier);
+
+    await listNotifier.save(edited);
+    await listNotifier.load();
 
     return true;
   }
@@ -74,6 +74,10 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
       appBar: AppBar(
         title: Text(widget.recipeId == null ? 'Recipe Create' : 'Recipe Edit'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {if (context.mounted) context.goNamed('home');},
+          ),
           IconButton(
             icon: const Icon(Icons.save), 
             onPressed: () async {

@@ -1,5 +1,5 @@
 import '../domain/recipe.dart';
-import '../domain/recipe_repository.dart';
+import '../data/recipe_repository.dart';
 
 class GetAllRecipes {
   final RecipeRepository repository;
@@ -16,5 +16,14 @@ class SaveRecipe {
 
   Future<void> call(Recipe recipe) async {
     await repository.save(recipe);
+  }
+}
+
+class DeleteRecipe {
+  final RecipeRepository repository;
+  DeleteRecipe(this.repository);
+
+  Future<void> call(String id) async {
+    await repository.delete(id);
   }
 }

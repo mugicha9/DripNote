@@ -1,4 +1,4 @@
-import 'package:dripnote/features/recipe_list/application/recipe_list_notifier.dart';
+import 'package:dripnote/features/recipe_list/presentation/recipe_list_notifier.dart';
 import 'package:dripnote/features/recipe_list/data/recipe_repository_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
