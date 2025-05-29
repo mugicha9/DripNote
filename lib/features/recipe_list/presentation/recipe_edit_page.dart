@@ -19,41 +19,16 @@ class RecipeEditPage extends ConsumerStatefulWidget {
 class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
   final _formKey = GlobalKey<FormState>();
 
-  late String _title;
-  String? _water;
-  String? _coffee;
-  String? _temperature;
-  String? _grain;
-
   @override
   void initState() {
     super.initState();
-    _initEditState();
   }
-
-  void _initEditState() {
-    final recipe = ref.read(recipeEditProvider(widget.recipeId));
-    _title = recipe.title;
-    _water = recipe.waterAmount?.toString();
-    _coffee = recipe.coffeeAmount?.toString();
-    _temperature = recipe.temperature?.toString();
-    _grain = recipe.grain;
-  }
-
   
   Future<bool> _onSave() async {
     if (!_formKey.currentState!.validate()) {
       return false;
     }
     _formKey.currentState!.save();
-
-    // Update Each Values
-    final notifier = ref.read(recipeEditProvider(widget.recipeId).notifier);
-    notifier.updateTitle(_title);
-    notifier.updateWaterAmount(_water != null && _water!.isNotEmpty ? int.tryParse(_water!) : null);
-    notifier.updateCoffeeAmount(_coffee != null && _coffee!.isNotEmpty ? int.tryParse(_coffee!) : null);
-    notifier.updateTemperature(_temperature != null && _temperature!.isNotEmpty ? int.tryParse(_temperature!) : null);
-    notifier.updateGrain(_grain);
 
     final edited = ref.read(recipeEditProvider(widget.recipeId));
 
@@ -100,10 +75,10 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
                 decoration: const InputDecoration(labelText: 'タイトル'),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (v) => v == null || v.isEmpty ? '必須です' : null,
-                onSaved: (v) => _title = v!,
+                onSaved: (v) => notifier.updateTitle(v ?? ""),
               ),
               TextFormField(
-                initialValue: _water,
+                initialValue: recipe.waterAmount?.toString() ?? "",
                 decoration: const InputDecoration(labelText: '水量 (ml)'),
                 keyboardType: TextInputType.number,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -117,10 +92,10 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
                   }
                   return null;
                 },
-                onSaved: (v) => _water = v,
+                onSaved: (v) => notifier.updateWaterAmount(int.tryParse(v ?? "")),
               ),
               TextFormField(
-                initialValue: _coffee,
+                initialValue: recipe.coffeeAmount?.toString() ?? "",
                 decoration: const InputDecoration(labelText: 'コーヒー量 (ml)'),
                 keyboardType: TextInputType.number,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -134,10 +109,10 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
                   }
                   return null;
                 },
-                onSaved: (v) => _coffee = v,
+                onSaved: (v) => notifier.updateCoffeeAmount(int.tryParse(v ?? "")),
               ),
               TextFormField(
-                initialValue: _temperature,
+                initialValue: recipe.temperature?.toString() ?? "",
                 decoration: const InputDecoration(labelText: '水温'),
                 keyboardType: TextInputType.number,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -151,12 +126,12 @@ class _RecipeEditPageState extends ConsumerState<RecipeEditPage> {
                   }
                   return null;
                 },
-                onSaved: (v) => _temperature = v,
+                onSaved: (v) => notifier.updateTemperature(int.tryParse(v ?? "")),
               ),
               TextFormField(
-                initialValue: _grain,
+                initialValue: recipe.grain ?? "",
                 decoration: const InputDecoration(labelText: '挽き目'),
-                onSaved: (v) => _grain = v,
+                onSaved: (v) => notifier.updateGrain(v ?? ""),
               ),
               const SizedBox(height: 24),
               const Divider(),

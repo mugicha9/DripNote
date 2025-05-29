@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'bean_edit_notifier.dart';
+import 'bean_list_notifier.dart';
 
 class BeanEditPage extends ConsumerWidget {
+  final String? beanId;
+  const BeanEditPage({super.key, this.beanId});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final beanId = ModalRoute.of(context)!.settings.arguments as String?;
-    final beanAsync = ref.watch(beanEditProvider(beanId));
+    final bean = ref.watch(beanEditProvider(beanId));
 
-    return beanAsync.when(
-      data: (bean) => Scaffold(
-        appBar: AppBar(title: Text(beanId == null ? 'Add Bean' : 'Edit Bean')),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(beanId == null ? 'Add Bean' : 'Edit Bean'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {if (context.mounted) context.goNamed('home');},
+            ),
+            IconButton(
+              icon: const Icon(Icons.save), 
+              onPressed: () async {
+                await ref.read(beanListProvider.notifier).save(bean); 
+                if (context.mounted) context.goNamed('home');
+              },
+            )
+          ]
+        ),
         body: Padding(
           padding: EdgeInsets.all(16),
           child: Column(
@@ -23,19 +41,9 @@ class BeanEditPage extends ConsumerWidget {
               ),
               // 同様にQuantity, RoastLevel, etc.
               Spacer(),
-              ElevatedButton(
-                onPressed: () async {
-                  await ref.read(beanEditProvider(beanId).notifier).save();
-                  Navigator.pop(context);
-                },
-                child: Text('Save'),
-              ),
             ],
           ),
         ),
-      ),
-      loading: () => Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: Center(child: Text('Error: \$e'))),
-    );
+      );
   }
 }

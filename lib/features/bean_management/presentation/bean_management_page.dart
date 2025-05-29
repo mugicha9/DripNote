@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'bean_list_notifier.dart';
 
 class BeanManagementPage extends ConsumerWidget {
@@ -17,7 +18,7 @@ class BeanManagementPage extends ConsumerWidget {
           itemBuilder: (_, i) {
             final bean = beans[i];
             return GestureDetector(
-              onTap: () => Navigator.pushNamed(context, '/bean_edit', arguments: bean.id),
+              onTap: () => context.goNamed('beanEdit', pathParameters: {'id':bean.id}),
               child: Card(
                 child: bean.imageUrl != null
                     ? Image.network(bean.imageUrl!)
@@ -30,7 +31,7 @@ class BeanManagementPage extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: \$e')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/bean_edit'),
+        onPressed: () => context.goNamed('beanCreate'),
         child: Icon(Icons.add),
       ),
     );

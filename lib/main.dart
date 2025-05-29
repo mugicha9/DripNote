@@ -1,3 +1,5 @@
+import 'package:dripnote/features/bean_management/data/bean_repository_impl.dart';
+import 'package:dripnote/features/bean_management/presentation/bean_edit_page.dart';
 import 'package:dripnote/features/recipe_list/domain/recipe.dart';
 import 'package:dripnote/features/recipe_list/domain/recipe_process_step.dart';
 import 'package:dripnote/features/recipe_list/domain/recipe_process_type.dart';
@@ -7,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/presentation/settings_page.dart';
+import 'features/bean_management/domain/bean.dart';
 import 'features/recipe_list/presentation/recipe_edit_page.dart';
 import 'features/recipe_list/presentation/recipe_list_page.dart';
 import 'features/bean_management/presentation/bean_management_page.dart';
@@ -22,13 +25,17 @@ void main() async {
   Hive.registerAdapter(RecipeProcessStepAdapter());
   Hive.registerAdapter(RecipeAdapter());
 
+  Hive.registerAdapter(BeanAdapter());
+
   // Hive.deleteBoxFromDisk('recipes');
 
-  final box = await Hive.openBox<Recipe>('recipes');
+  final boxRecipe = await Hive.openBox<Recipe>('recipes');
+  final boxBean = await Hive.openBox<Bean>('beans');
 
   runApp(ProviderScope(
     overrides: [
-      recipeBoxProvider.overrideWithValue(box),
+      recipeBoxProvider.overrideWithValue(boxRecipe),
+      beanBoxProvider.overrideWithValue(boxBean)
     ],
     child: DripNoteApp()
   ));
@@ -64,7 +71,20 @@ final GoRouter _router = GoRouter(
         final id = state.pathParameters['id']!;
         return RecipeEditPage(recipeId: id);
       },
-    )
+    ),
+    GoRoute(
+      path: '/bean_edit',
+      name: 'beanCreate',
+      builder: (context, state) => BeanEditPage(),
+    ),
+    GoRoute(
+      path: '/bean_edit/:id',
+      name: 'beanEdit',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return BeanEditPage(beanId: id);
+      }
+    ),
   ]
 );
 
