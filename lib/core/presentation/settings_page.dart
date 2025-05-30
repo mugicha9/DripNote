@@ -22,6 +22,7 @@ class SettingsPage extends ConsumerWidget {
       final box = ref.read(recipeBoxProvider);
       await box.clear();
       await ref.read(recipeListProvider.notifier).load();
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('すべてのレシピデータを削除しました'))
       );

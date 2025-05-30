@@ -15,6 +15,7 @@ import 'features/recipe_list/presentation/recipe_list_page.dart';
 import 'features/bean_management/presentation/bean_management_page.dart';
 import 'features/common/presentation/splash_screen.dart';
 import 'features/recipe_list/data/recipe_repository_impl.dart';
+import 'core/routes/routers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,52 +42,7 @@ void main() async {
   ));
 }
 
-final GoRouter _router = GoRouter(
-  initialLocation: '/',
-  routes: [
-    GoRoute(
-      path: '/',
-      name: 'splash',
-      builder: (context, state) => const SplashWrapper(),
-    ),
-    GoRoute(
-      path: '/home',
-      name: 'home',
-      builder:(context, state) => const MainScreen(),
-    ),
-    GoRoute(
-      path: '/settings',
-      name: 'settings',
-      builder: (context, state) => const SettingsPage(),
-    ),
-    GoRoute(
-      path: '/recipe/edit',
-      name: 'recipeCreate',
-      builder:(context, state) => const RecipeEditPage(),
-    ),
-    GoRoute(
-      path: '/recipe/edit/:id',
-      name: 'recipeEdit',
-      builder: (_, state) {
-        final id = state.pathParameters['id']!;
-        return RecipeEditPage(recipeId: id);
-      },
-    ),
-    GoRoute(
-      path: '/bean_edit',
-      name: 'beanCreate',
-      builder: (context, state) => BeanEditPage(),
-    ),
-    GoRoute(
-      path: '/bean_edit/:id',
-      name: 'beanEdit',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return BeanEditPage(beanId: id);
-      }
-    ),
-  ]
-);
+final mainScreenIndexProvider = StateProvider<int>((ref) => 0);
 
 class DripNoteApp extends StatelessWidget {
   const DripNoteApp({super.key});
@@ -98,20 +54,20 @@ class DripNoteApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.brown,
       ),
-      routerConfig: _router,
+      routerConfig: router,
     );
   }
 }
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+class _MainScreenState extends ConsumerState<MainScreen> {
+
   static const List<Widget> _pages = [
     RecipeListPage(),
     BeanManagementPage(),
@@ -120,13 +76,15 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = ref.watch(mainScreenIndexProvider);
+
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: _pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         onTap:(value) {
           setState(() {
-            _currentIndex = value;
+            ref.watch(mainScreenIndexProvider.notifier).state = value;
           });
         },
         items: const [
